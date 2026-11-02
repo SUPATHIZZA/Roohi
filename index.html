@@ -303,7 +303,7 @@ const CONFIG = {
   passcode: "1234",
   bgVideo: "",                  // මුළු site එකටම පිටිපස්සේ video එක, e.g. "video/bg.mp4" (නැත්නම් "")
   coverArt: "scene1.jpg", // පළවෙනි පිටුවේ illustration එක (සේරම පටන් ගත්ත තැන)
-  music: "",                    // e.g. "music/song.mp3"  (නැත්නම් "")
+  music: "music.mp3",                    // e.g. "music/song.mp3"  (නැත්නම් "")
   voice: "",                    // e.g. "voice/message.m4a" (නැත්නම් "")
   unlockAt: "",                 // e.g. "2027-03-15T00:00:00+05:30"  (lock එක ඕන නැත්නම් "")
   sceneStyle: "paper",          // "lines" = නිල් පසුබිමේ සුදු ඉරි, "paper" = මුල් සුදු කඩදාසි පාට
@@ -349,7 +349,7 @@ if(!CONFIG.music)$("mute").style.display="none";else bgm.src=CONFIG.music;
 let musicOn=false;
 function start(){ /* පළවෙනි touch එකෙන් music/video පටන් ගන්නවා (browser autoplay rules) */
   if(musicOn)return;
-  if(CONFIG.music){bgm.volume=.6;bgm.play().then(()=>{musicOn=true;$("mute").textContent="🎵"}).catch(()=>{})}
+  if(CONFIG.music){bgm.volume=0;bgm.play().then(()=>{musicOn=true;$("mute").textContent="🎵";let v=0;const f=setInterval(()=>{v=Math.min(.6,v+.03);bgm.volume=v;if(v>=.6)clearInterval(f)},150)}).catch(()=>{})}
   if(CONFIG.bgVideo){const v=$("bgv");v.play&&v.play().catch(()=>{})}
 }
 function toggleMusic(){
