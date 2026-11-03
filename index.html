@@ -232,7 +232,26 @@ body.dark #cap{pointer-events:none;font-size:1.25rem;line-height:1.7;max-width:4
 .dri.ready #drh{animation:pulse 1.4s infinite}
 #fpv{position:fixed;inset:0;z-index:90;display:none;background:#000}
 #fpv canvas{width:100%;height:100%;display:block}
-#fpt{position:absolute;left:0;right:0;bottom:10vh;text-align:center;padding:0 24px;font-size:1.2rem;line-height:1.7;color:#ffe4ec;text-shadow:0 0 14px #f43f5e;opacity:0;transition:opacity 2.5s}
+#fpn{position:absolute;left:0;right:0;bottom:4vh;display:none;gap:14px;justify-content:center}#fpn button{background:#ffffff24;border:1px solid #fda4af88;backdrop-filter:blur(6px);box-shadow:none}#fpt small{font-size:.8rem;opacity:.8}#fpt{pointer-events:none;position:absolute;left:0;right:0;bottom:15vh;text-align:center;padding:0 24px;font-size:1.2rem;line-height:1.7;color:#ffe4ec;text-shadow:0 0 14px #f43f5e;opacity:0;transition:opacity 2.5s}
+
+/* ===== cake scene ===== */
+#s8{background:radial-gradient(ellipse at 50% 35%,#2a1450,#0a0618 80%);color:#fde8ef;overflow:hidden;gap:6px;padding:12px}
+#cakeSvg{width:min(94vw,430px);height:auto;max-height:82vh;overflow:visible}
+#cakeMsg{min-height:2.6em;max-width:340px;line-height:1.6;text-shadow:0 0 10px #f472b6;font-size:1rem}
+#flame .fl{transform-box:fill-box;transform-origin:50% 100%;animation:flk .18s ease-in-out infinite alternate}
+@keyframes flk{from{transform:scale(1,1) skewX(-3deg)}to{transform:scale(.88,1.1) skewX(3deg)}}
+#flame{transition:opacity .5s}#flame.out{opacity:0}
+#cglowc{transition:opacity 1.4s}#cglowc.out{opacity:.12}
+#smoke.go{animation:smk 3.4s ease-out forwards}
+@keyframes smk{0%{opacity:0;transform:translateY(8px)}15%{opacity:.9}100%{opacity:0;transform:translateY(-30px)}}
+#flapG{transform-box:fill-box;transform-origin:50% 0;transition:transform .9s}
+#letterG.open #flapG{transform:scaleY(-1)}
+#paperG{transition:transform 1.6s ease}
+#letterG.open #paperG{transform:translateY(-34px) scale(1.25);transform-box:fill-box;transform-origin:50% 100%}
+#letterG:not(.open){animation:lpulse 1.8s ease-in-out infinite}
+@keyframes lpulse{50%{opacity:.6}}
+#wh{position:fixed;inset:0;background:#fff;z-index:100;opacity:0;pointer-events:none;transition:opacity 6s ease-in}
+#wh.on{opacity:1;pointer-events:auto}
 </style>
 </head>
 <body>
@@ -320,11 +339,42 @@ body.dark #cap{pointer-events:none;font-size:1.25rem;line-height:1.7;max-width:4
   <div id="gm"><div id="gmBox" class="card"></div></div>
 </div>
 
-<div class="screen" id="s6">
-  <h1 id="fh">අන්තිම surprise! 🎉</h1>
-  <p id="fp">තෑග්ගට 3 පාරක් touch කරන්න</p>
-  <div id="gift" onclick="tapGift()">🎁</div>
-  <div class="card" id="letter" style="display:none"></div>
+<div class="screen" id="s8">
+  <svg id="cakeSvg" viewBox="0 0 400 470">
+    <defs>
+      <path id="arc" d="M30 215A170 165 0 0 1 370 215"/>
+      <radialGradient id="cglow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fde68a" stop-opacity=".55"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
+      <linearGradient id="cb1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbcfe8"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+      <linearGradient id="cb2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1f2"/><stop offset="1" stop-color="#fda4af"/></linearGradient>
+      <linearGradient id="tbl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c3f20"/><stop offset="1" stop-color="#3b1d0e"/></linearGradient>
+      <radialGradient id="fl" cx="50%" cy="70%" r="60%"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#fde047"/><stop offset="1" stop-color="#f97316"/></radialGradient>
+    </defs>
+    <text font-size="25" font-weight="700" fill="#fde68a" letter-spacing="1" style="filter:drop-shadow(0 0 8px #f59e0b)"><textPath href="#arc" startOffset="50%" text-anchor="middle">Happy Birthday My Dear Love</textPath></text>
+    <circle id="cglowc" cx="200" cy="210" r="150" fill="url(#cglow)"/>
+    <rect x="0" y="372" width="400" height="98" fill="url(#tbl)"/>
+    <rect x="0" y="372" width="400" height="6" fill="#a8602f"/>
+    <ellipse cx="200" cy="378" rx="150" ry="16" fill="#e5e7eb"/><ellipse cx="200" cy="374" rx="150" ry="14" fill="#f9fafb"/>
+    <rect x="70" y="300" width="260" height="72" rx="10" fill="url(#cb1)"/>
+    <path d="M70 312Q90 335 110 312Q130 338 150 312Q170 336 190 312Q210 338 230 312Q250 335 270 312Q290 338 310 312L330 312L330 300Q330 292 322 292L78 292Q70 292 70 300Z" fill="#fff"/>
+    <rect x="115" y="236" width="170" height="64" rx="10" fill="url(#cb2)"/>
+    <path d="M115 248Q132 270 150 248Q168 272 186 248Q204 270 222 248Q240 272 258 248Q272 266 285 248L285 242Q285 232 275 232L125 232Q115 232 115 242Z" fill="#fff"/>
+    <g font-size="20"><text x="128" y="230">🍓</text><text x="168" y="230">🍒</text><text x="212" y="230">🍒</text><text x="250" y="230">🍓</text></g>
+    <g fill="#fde047"><circle cx="100" cy="340" r="4"/><circle cx="140" cy="352" r="4"/><circle cx="200" cy="344" r="4"/><circle cx="260" cy="352" r="4"/><circle cx="300" cy="340" r="4"/></g>
+    <rect x="195" y="180" width="10" height="56" rx="2" fill="#93c5fd"/>
+    <path d="M195 192L205 186M195 204L205 198M195 216L205 210" stroke="#fff" stroke-width="3"/>
+    <g id="flame"><circle cx="200" cy="162" r="34" fill="url(#cglow)"/><g class="fl"><path d="M200 138C210 152 212 164 200 178C188 164 190 152 200 138Z" fill="url(#fl)"/></g></g>
+    <g id="smoke" opacity="0"><path d="M200 175C190 150 212 140 200 112C192 92 210 84 204 64" stroke="#e5e7eb" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/></g>
+    <rect id="candHit" x="160" y="110" width="80" height="130" fill="transparent" style="cursor:pointer"/>
+    <g id="letterG" style="cursor:pointer" transform="rotate(5 340 405)">
+      <rect x="296" y="383" width="86" height="56" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+      <g id="paperG"><rect x="304" y="388" width="70" height="44" rx="2" fill="#fff" stroke="#fcd34d"/><path d="M312 398H366M312 407H366M312 416H350" stroke="#d6d3d1" stroke-width="2"/></g>
+      <path d="M296 387L339 418L382 387L382 439L296 439Z" fill="#fde68a" stroke="#d97706" stroke-width="1.5" stroke-linejoin="round"/>
+      <g id="flapG"><path d="M296 383L339 416L382 383Z" fill="#fcd34d" stroke="#d97706" stroke-width="1.5" stroke-linejoin="round"/></g>
+      <text x="339" y="428" font-size="15" text-anchor="middle">💌</text>
+      <rect x="290" y="370" width="98" height="76" fill="transparent"/>
+    </g>
+  </svg>
+  <p id="cakeMsg"></p>
 </div>
 
 <div class="screen" id="s7">
@@ -333,7 +383,8 @@ body.dark #cap{pointer-events:none;font-size:1.25rem;line-height:1.7;max-width:4
     <div id="drlock"><svg id="drslot" viewBox="0 0 200 250"><path d="M84 232C50 202 22 160 28 118C31 96 48 86 64 86C66 70 76 60 90 58C90 38 108 24 128 30C150 36 156 58 146 74C150 70 158 62 164 66C176 74 170 100 160 120C148 160 120 205 84 232Z" fill="#12060b" stroke="#fff3c4" stroke-width="5"/></svg></div></div>
   <div id="drtray"></div>
 </div>
-<div id="fpv"><canvas id="fpc"></canvas><div id="fpt"></div><button id="fpb" style="display:none;position:absolute;left:50%;bottom:4vh;transform:translateX(-50%)" onclick="endFpv()">ඉදිරියට →</button></div>
+<div id="wh"></div>
+<div id="fpv"><canvas id="fpc"></canvas><div id="fpt"></div><div id="fpn"><button id="fpp" onclick="fnav(-1)">◀</button><button id="fpb" onclick="fnav(1)">ඊළඟ →</button></div></div>
 
 <button class="fab" style="right:12px" onclick="vault.style.display='flex'">🔒</button>
 <div id="vault">
@@ -348,14 +399,13 @@ body.dark #cap{pointer-events:none;font-size:1.25rem;line-height:1.7;max-width:4
 /* ============ මෙතන විතරක් වෙනස් කරන්න (CONFIG) ============ */
 const CONFIG = {
   name: "මගේ ආදරේ",
+  heartPhotos:[{src:"photos/1.jpg",cap:"කන්දක් උඩ අපි දෙන්නා 🌄"},{src:"photos/2.jpg",cap:"අපේ ලස්සන සෙල්ෆි එක 📸"},{src:"photos/3.jpg",cap:"අතින් අත ගත්ත ඇවිදිල්ල 🤍"},{src:"photos/4.jpg",cap:"හිරු බැහැපු සන්ධ්‍යාවක 🌅"},{src:"photos/5.jpg",cap:"අපේ පවුලේ සිහිනය 👨‍👩‍👧‍👦"}],  // photos/1.jpg ... 5.jpg, cap = පහළින් පෙන්නන වචන
   heartText: "ඔයා දැන් මගේ හදවත ඇතුලේ... මෙතන තියෙන්නේ ඔයාට විතරයි 💗",
   title: "Happy Birthday, මගේ ආදරේ! 🎂",
   passcode: "1234",
   bgVideo: "",                  // මුළු site එකටම පිටිපස්සේ video එක, e.g. "video/bg.mp4" (නැත්නම් "")
   coverArt: "scene1.jpg", // පළවෙනි පිටුවේ illustration එක (සේරම පටන් ගත්ත තැන)
   music: "music.mp3",                    // e.g. "music/song.mp3"  (නැත්නම් "")
-  voice: "",                    // e.g. "voice/message.m4a" (නැත්නම් "")
-  unlockAt: "",                 // e.g. "2027-03-15T00:00:00+05:30"  (lock එක ඕන නැත්නම් "")
   sceneStyle: "paper",          // "lines" = නිල් පසුබිමේ සුදු ඉරි, "paper" = මුල් සුදු කඩදාසි පාට
   ask: "මේ මොහොත මතකද? 💭 (රූපය ඇල්ලුවාම…)",   // රූපය බලලා මතක් කරගන්න ඉඟිය
   drawMs: 9000,                 // එක මතකයක් පැන්සලෙන් ඇඳෙන කාලය (ms)
@@ -391,9 +441,12 @@ const CONFIG = {
     {q:"ඔයා මට කොච්චරක් ආදරයෙද?", a:["ඉදිකටු තුඩක්","ඇඟිලි දෙකක පරතරයක්","අහසක්","ලෝකයක්","විශ්වයක්"],i:["🪡","✌️","☁️","🌍","🌌"], c:0}
   ],
   quizEnd: "මම දන්නව මැණික මම දැන් ඔයාගෙ හුස්ම කියල ඒක මට දැනෙනව",
-  scratch: "ඔයා මගේ ලොකුම වාසනාව 💙",
-  finalPhoto: "",
-  finalLetter: "ඔයාට ලියන දිග ආදර ලිපිය මෙතන ලියන්න. ❤️",
+  heartMusic: "heart_music.mp3", heartBeat: "heartbeat.mp3", heartBeatVol: .55, musicVol: .6, musicDuck: .35,          // හදවත ඇතුලෙදි play වෙන track එක (ඔයා දෙන එක)
+  heartVoices: ["voice1.mp3"],  // හදවත ඇතුලෙදි track එකත් එක්ක blend වෙන voice clips (පිළිවෙලට)
+  voiceFirstMs: 7000,           // හදවතට ඇතුල් වෙලා පළවෙනි voice clip එක එන තෙක් වෙලාව (ms)
+  voiceGapMs: 9000,             // voice clips අතර පරතරය (ms)
+  letterVoice: "voice2.mp3",   // ලියුම ඇරියාම play වෙන voice clip එක
+  letterFallbackMs: 9000,       // letterVoice file එක නැත්නම් / play නොවුණොත් එලිය වැඩි වෙන්න කලින් ඉන්න වෙලාව
   msgUrl: "",                   // Google Apps Script "Web app" URL (/exec ... ) — එයාගේ පණිවිඩ ඔයාට එන තැන (නැත්නම් "")
   msgKey: "change-me-1234",     // Apps Script එකේ KEY එකටම සමාන වෙන්න ඕන
   msgHint: "ඔයාට මට කියන්න ඕන දෙයක් මෙතන ලියන්න 💌 (මේක මට එනවා)",
@@ -417,9 +470,9 @@ $("art1").src=$("art2").src=$("introImg").src=CONFIG.coverArt;
 
 function go(n){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));$("s"+n).classList.add("on");
-  clearInterval(hiv);
+  clearInterval(hiv);if(n!=8)heartKill();
   if(n!=1){UW.on=false;cancelAnimationFrame(udraw);uniFx(false);$("uni").classList.remove("on");document.body.classList.remove("dark");photoReset();goldReset()}
-  if(n==1)startStory(); if(n==2)startMaze(); if(n==6)finalInit(); if(n==7)startDoor();
+  if(n==1)startStory(); if(n==2)startMaze(); if(n==7)startDoor(); if(n==8)startCake();
 }
 /* Infinity loop (first page) */
 (function(){
@@ -445,6 +498,7 @@ function go(n){
   const at=(u,o)=>{const f=(((u%1)+1)%1)*N,i=Math.floor(f),r=f-i,j=(i+1)%N,a=pts[i%N],b=pts[j];
     const x=a.x+(b.x-a.x)*r,y=a.y+(b.y-a.y)*r,X=nx[i%N]+(nx[j]-nx[i%N])*r,Y=ny[i%N]+(ny[j]-ny[i%N])*r;return[x+X*o,y+Y*o]};
   const HOLD=3/8;let q=0,pr=0,acc=0,last=null,done=false,touching=false,stopped=false,lt=0;
+
   function frame(now){
     if(stopped)return;
     const dt=Math.min(50,now-(lt||now));lt=now;
@@ -466,9 +520,9 @@ function go(n){
     const shown=Math.floor(P.length*q);
     for(let pi=0;pi<shown;pi++){const p=P[pi];
       p.u-=p.sp*dt;
-      const o=p.o*(1+.4*Math.sin(now*.002+p.ph)),q=at(p.u,o),sz=p.sz*(1+.5*q)*(.8+.4*Math.sin(now*.004+p.ph));
+      const o=p.o*(1+.4*Math.sin(now*.002+p.ph)),pq=at(p.u,o),sz=p.sz*(1+.5*q)*(.8+.4*Math.sin(now*.004+p.ph));
       ctx.globalAlpha=Math.min(1,(.35+.5*Math.abs(Math.sin(now*.0015+p.ph)))*gi);
-      ctx.drawImage(SP[p.t],q[0]-sz,q[1]-sz,sz*2,sz*2);
+      ctx.drawImage(SP[p.t],pq[0]-sz,pq[1]-sz,sz*2,sz*2);
     }
     ctx.globalAlpha=1;
     /* finger sparks */
@@ -862,7 +916,7 @@ function gRps(box,done){
 /* Heart door + inside the heart (FPV) */
 const HP="M84 232C50 202 22 160 28 118C31 96 48 86 64 86C66 70 76 60 90 58C90 38 108 24 128 30C150 36 156 58 146 74C150 70 158 62 164 66C176 74 170 100 160 120C148 160 120 205 84 232Z";
 function heartSVG(){return `<svg viewBox="0 0 200 250" style="width:100%;display:block;filter:drop-shadow(0 0 8px #f43f5e)"><defs><radialGradient id="hgr" cx=".4" cy=".4" r=".8"><stop offset="0" stop-color="#ff7a8f"/><stop offset=".55" stop-color="#c4122f"/><stop offset="1" stop-color="#5a0719"/></radialGradient></defs><path d="${HP}" fill="url(#hgr)" stroke="#ffd0da" stroke-width="1.5"/><g fill="none" stroke-linecap="round"><path d="M96 92C88 130 82 175 86 212" stroke="#fda4af" stroke-width="3" opacity=".7"/><path d="M68 104C58 132 62 172 76 198" stroke="#fda4af" stroke-width="2.5" opacity=".6"/><path d="M150 76C158 92 156 112 148 126" stroke="#93c5fd" stroke-width="5" opacity=".75"/><path d="M104 60C106 74 120 80 132 72" stroke="#fecdd3" stroke-width="3" opacity=".6"/></g><ellipse cx="66" cy="130" rx="9" ry="26" fill="#fff" opacity=".18" transform="rotate(14 66 130)"/></svg>`}
-let dr={},fr=0;
+let dr={},fr=0,GAL,LK={w:0,p:0};
 function startDoor(){
   dr={};$("drw").className="";$("drlock").style.filter="";
   $("drtray").innerHTML=`<div class="dri" id="dt" onclick="give('t')">⏳<small>ඔයාගේ කාලය</small></div><div class="dri" id="dm" onclick="give('m')">💰<small>ඔයාගේ මුදල්</small></div><div class="dri off" id="dh"><div id="drh">${heartSVG()}</div><small>ඔයාගේ හදවත</small></div>`;
@@ -892,12 +946,24 @@ function bindHeart(){
       setTimeout(startFpv,3300);
     }else{h.style.cssText="";$("drlock").style.filter="drop-shadow(0 0 18px #fbbf24)"}};
 }
-function endFpv(){cancelAnimationFrame(fr);$("fpv").style.display="none";go(6)}
+function cap(i){const P=CONFIG.heartPhotos,t=$("fpt");t.style.opacity=0;
+  setTimeout(()=>{t.innerHTML=i<0?CONFIG.heartText+"<br><small>ඇඟිල්ලෙන් අදලා වටේ බලන්න, උඩටත් බලන්න ☝️</small>":(P[i].cap||"")+`<br><small>${i+1} / 5</small>`;t.style.opacity=1},350);
+  $("fpb").textContent=i==4?"ඉදිරියට 🎁":i<0?"පළමු photo එක →":"ඊළඟ →";$("fpp").style.visibility=i<0?"hidden":"visible"}
+function fnav(d){const n=GAL.i+d;if(n>4){endFpv();return}if(n<-1)return;const W_=Math.PI/2,sd=n%2?-1:1;
+  GAL.a=GAL.cur;GAL.b=n<0?{x:0,z:0,w:0,p:0}:{x:sd*.1,z:8+n*6.5,w:sd*W_,p:.38};GAL.t0=performance.now();GAL.dur=3000;LK={w:0,p:0};GAL.i=n;cap(n)}
+function endFpv(){cancelAnimationFrame(fr);$("fpv").style.display="none";heartVoicesStop();go(8)}
 function startFpv(){
+  heartStart();
   const f=$("fpv"),c=$("fpc"),x=c.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1);
-  f.style.display="block";$("fpt").style.opacity=0;$("fpb").style.display="none";$("fpt").textContent=CONFIG.heartText;
+  f.style.display="block";$("fpt").style.opacity=0;$("fpn").style.display="none";
   c.width=innerWidth*dpr;c.height=innerHeight*dpr;
   const P=new Path2D(HP),W=c.width,H=c.height,U=Math.min(W,H)*.0034,t0=performance.now(),A=36,T=[];
+  const Wd=3,S2=.6,F=Math.min(W,H)*.95,RB=(()=>{const q=document.createElementNS("http://www.w3.org/2000/svg","path");q.setAttribute("d",HP);const L=q.getTotalLength();return Array.from({length:64},(_,i)=>{const o=q.getPointAtLength(i/64*L);return[o.x,o.y]})})();
+  const FR=CONFIG.heartPhotos.map((ph,i)=>{const im=new Image();if(ph.src)im.src=ph.src;const pc=document.createElement("canvas");pc.width=400;pc.height=509;const g=pc.getContext("2d"),gg=g.createLinearGradient(0,0,400,509);gg.addColorStop(0,"#f9a8d4");gg.addColorStop(1,"#7c3aed");g.fillStyle=gg;g.fillRect(0,0,400,509);g.fillStyle="#fff";g.font="90px serif";g.textAlign="center";g.fillText("💗",200,260);g.font="28px sans-serif";g.fillText("photo "+(i+1),200,320);
+  return{side:i%2?-1:1,z:8+i*6.5,yc:1.3,w:2.2,h:2.8,im,pc}});
+  const PT=Array.from({length:60},()=>({x:(Math.random()-.5)*6,y:Math.random()*8-1.5,z:Math.random()*26}));
+  GAL={i:-1,on:0,a:{x:0,z:-2,w:0,p:0},b:{x:0,z:0,w:0,p:0},t0:performance.now()+6500,dur:3500,cur:{x:0,z:-2,w:0,p:0}};LK={w:0,p:0};
+  let dn=0,lx=0,ly=0;c.onpointerdown=e=>{dn=1;lx=e.clientX;ly=e.clientY};c.onpointermove=e=>{if(!dn)return;LK.w=Math.max(-1.2,Math.min(1.2,LK.w-(e.clientX-lx)*.005));LK.p=Math.max(-.5,Math.min(.9,LK.p+(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY};c.onpointerup=c.onpointerleave=()=>dn=0;
   const pr=Array.from({length:80},()=>({a:Math.random()*6.28,r:.2+Math.random()*.8,z:Math.random(),s:2+Math.random()*4}));
   let ac,lastB=-1;try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
   const thump=(v)=>{if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(70,ac.currentTime);o.frequency.exponentialRampToValueAtTime(38,ac.currentTime+.18);
@@ -916,18 +982,24 @@ function startFpv(){
       x.lineCap="round";x.lineWidth=3;x.strokeStyle="#fda4af99";[["M96 92C88 130 82 175 86 212"],["M68 104C58 132 62 172 76 198"]].forEach(d=>x.stroke(new Path2D(d[0])));
       x.lineWidth=6;x.strokeStyle="#93c5fdaa";x.stroke(new Path2D("M150 76C158 92 156 112 148 126"));x.restore();
       if(t>4.6){const a=ez((t-4.6)/1.9),r=Math.min(W,H)*(.05+1.3*a),dg=x.createRadialGradient(cx,cy,0,cx,cy,r);dg.addColorStop(0,"#05010aff");dg.addColorStop(.75,"#2a0310f0");dg.addColorStop(1,"#0000");x.fillStyle=dg;x.fillRect(0,0,W,H)}
-    }else{ /* B: හදවත ඇතුළත FPV */
-      const u=t-6.5,cam=2.2*(u+Math.min(0,0)),S_=.55,end=Math.min(1,u/9);
-      for(let k=A;k>=0;k--){
-        const d=k*S_-(cam%S_)+.12,sc=.9/d,n=Math.max(0,1-d/(A*S_)),sw=Math.sin(u*.8+k*.35)*14;
-        x.save();x.translate(cx+sw*sc*.3*U,cy);x.scale(U*sc*(1+.045*beat),U*sc*(1+.045*beat));x.translate(-100,-130);
-        x.lineJoin="round";x.lineWidth=34+Math.sin(k*1.7+Math.floor(cam/S_)*1.3)*8;x.strokeStyle=`hsl(${348+Math.sin(k)*8},${70+n*10}%,${6+n*26+beat*5}%)`;x.stroke(P);
-        x.lineWidth=2;x.strokeStyle=`rgba(255,170,190,${n*.5})`;x.stroke(P);x.restore();
-      }
-      const lg=x.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*(.08+.5*end));lg.addColorStop(0,`rgba(255,244,230,${.5+.5*end})`);lg.addColorStop(.4,`rgba(251,113,133,${.35*end})`);lg.addColorStop(1,"#0000");x.fillStyle=lg;x.fillRect(0,0,W,H);
-      pr.forEach(p=>{p.z-=.006+.004*beat;if(p.z<.02)p.z=1;const R=p.r*Math.min(W,H)*.5/(.15+p.z*4),px=cx+Math.cos(p.a)*R,py=cy+Math.sin(p.a)*R*1.1,r=p.s*dpr*(1.2-p.z);
-        x.fillStyle=`rgba(220,38,70,${.7*(1-p.z)})`;x.beginPath();x.ellipse(px,py,r*1.4,r*.8,p.a,0,6.28);x.fill()});
-      if(u>8){$("fpt").style.opacity=1}if(u>11)$("fpb").style.display="block";
+    }else{ /* B: හදවත ඇතුළත gallery */
+      if(!GAL.on){GAL.on=1;$("fpn").style.display="flex";cap(-1)}
+      const e=ez(Math.max(0,Math.min(1,(now-GAL.t0)/GAL.dur))),A_=GAL.a,B_=GAL.b,cm={x:A_.x+(B_.x-A_.x)*e,z:A_.z+(B_.z-A_.z)*e,w:A_.w+(B_.w-A_.w)*e+LK.w,p:A_.p+(B_.p-A_.p)*e+LK.p};GAL.cur=cm;
+      const cs=Math.cos(cm.w),sn=Math.sin(cm.w),cp=Math.cos(cm.p),sp=Math.sin(cm.p),pj=(X,Y,Z)=>{const dx=X-cm.x,dz=Z-cm.z,xr=dx*cs-dz*sn,zr=dx*sn+dz*cs;return[W/2+F*xr/(Y*sp+zr*cp),H/2-F*(Y*cp-zr*sp)/(Y*sp+zr*cp),Y*sp+zr*cp]};
+      const rk=.052*(1+.03*beat),M=Math.floor(cm.z/S2)-1;let prev=null;
+      x.lineJoin="round";
+      for(let m=M+48;m>=M;m--){const Z=m*S2,ps=RB.map(([px,py])=>pj((px-100)*rk,(130-py)*rk+3,Z)),nn=Math.max(0,1-(Z-cm.z)/28),zz=Math.max(.3,ps[0][2]);
+        x.lineWidth=Math.min(160,F*S2*1.2/zz);x.strokeStyle=`hsl(${350+Math.sin(m)*7},68%,${4+nn*(m%2?20:25)+beat*5}%)`;x.beginPath();
+        ps.forEach((q,i)=>{const r=ps[(i+1)%64];if(q[2]>.2&&r[2]>.2){x.moveTo(q[0],q[1]);x.lineTo(r[0],r[1])}});x.stroke();
+        if(prev){x.lineWidth=Math.max(1,F*.05/zz);x.strokeStyle=`rgba(255,140,165,${.3*nn})`;x.beginPath();for(let i=0;i<64;i+=8)if(ps[i][2]>.2&&prev[i][2]>.2){x.moveTo(ps[i][0],ps[i][1]);x.lineTo(prev[i][0],prev[i][1])}x.stroke()}prev=ps}
+      FR.forEach(f=>{const s=f.side,P4=(wp,hp,dx)=>[[1,1],[-1,1],[-1,-1],[1,-1]].map(([ku,kv])=>pj(s*(Wd-dx),f.yc+kv*hp/2,f.z+s*ku*wp/2)),poly=(ar,fs)=>{if(ar.some(q=>q[2]<.25))return;x.fillStyle=fs;x.beginPath();ar.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.fill()};
+        const o=pj(s*Wd,f.yc,f.z);if(o[2]<.3)return;
+        const sg=x.createRadialGradient(o[0],o[1],0,o[0],o[1],F*2.4/o[2]);sg.addColorStop(0,"rgba(255,226,170,.38)");sg.addColorStop(1,"#0000");x.fillStyle=sg;x.fillRect(0,0,W,H);
+        poly(P4(f.w+.4,f.h+.4,0),"#c9a24b");poly(P4(f.w+.3,f.h+.3,.01),"#7a5a12");poly(P4(f.w+.16,f.h+.16,.03),"#f6ecd6");
+        const im=f.im.complete&&f.im.naturalWidth?f.im:f.pc,iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,as=f.w/f.h;let sw=iw,sh=iw/as,sx=0,sy=(ih-sh)/2;if(iw/ih>as){sh=ih;sw=ih*as;sx=(iw-sw)/2;sy=0}
+        const N=36,E=j=>{const z=f.z+s*(f.w/2-j*f.w/N);return[pj(s*(Wd-.06),f.yc+f.h/2,z),pj(s*(Wd-.06),f.yc-f.h/2,z)]};let c0=E(0);
+        for(let j=0;j<N;j++){const c1=E(j+1);if(c0[0][2]>.25&&c1[0][2]>.25&&c1[0][0]>c0[0][0])x.drawImage(im,sx+j*sw/N,sy,sw/N,sh,c0[0][0],(c0[0][1]+c1[0][1])/2,c1[0][0]-c0[0][0]+1,((c0[1][1]-c0[0][1])+(c1[1][1]-c1[0][1]))/2);c0=c1}});
+      PT.forEach(q=>{if(q.z<cm.z+.3)q.z+=26;q.y+=Math.sin(t+q.x)*.002;const o=pj(q.x,q.y,q.z);if(o[2]>.3&&o[2]<26){x.fillStyle=`rgba(255,120,150,${.6*(1-o[2]/26)})`;x.beginPath();x.arc(o[0],o[1],Math.max(.8,F*.03/o[2]),0,6.28);x.fill()}});
     }
     const v=x.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);v.addColorStop(0,"#0000");v.addColorStop(1,"#000c");x.fillStyle=v;x.fillRect(0,0,W,H);
     fr=requestAnimationFrame(frame);
@@ -935,28 +1007,62 @@ function startFpv(){
   fr=requestAnimationFrame(frame);
 }
 
-/* Final: countdown lock + gift */
-let taps=0,cd;
-function finalInit(){
-  clearInterval(cd);
-  const t=CONFIG.unlockAt?new Date(CONFIG.unlockAt):null;
-  if(t&&t>new Date()&&!location.search.includes("test")){
-    $("gift").style.display="none";$("fh").textContent="තව ටිකක් ඉන්න... ⏳";
-    const tick=()=>{const s=Math.max(0,Math.floor((t-new Date())/1000));
-      if(s==0){clearInterval(cd);location.reload();return}
-      $("fp").innerHTML=`<span style="font-size:1.6rem">${Math.floor(s/86400)} දින ${Math.floor(s%86400/3600)} පැය ${Math.floor(s%3600/60)} මි ${s%60} තත්.</span><br>උපන්දිනයට පස්සේ අන්තිම surprise එක විවෘත වෙනවා 🎁`};
-    tick();cd=setInterval(tick,1000);
-  }
+/* ===== audio: heart track + voice clips blended ===== */
+const HA={m:null,h:null,v:null,t:0,on:false,fx:new Map()};
+function fade(el,to,ms,cb){
+  if(!el)return;clearInterval(HA.fx.get(el));const from=el.volume,t0=performance.now();
+  const iv=setInterval(()=>{const p=Math.min(1,(performance.now()-t0)/ms);el.volume=Math.max(0,Math.min(1,from+(to-from)*p));if(p>=1){clearInterval(iv);cb&&cb()}},40);HA.fx.set(el,iv);
 }
-function tapGift(){
-  const g=$("gift");g.classList.remove("shake");void g.offsetWidth;g.classList.add("shake");
-  if(++taps<3)return;
-  g.style.display="none";$("fp").style.display="none";
-  const l=$("letter");l.style.display="block";
-  l.innerHTML=`<div class="big">🎂</div><h2>Happy Birthday ${CONFIG.name}!</h2>${CONFIG.finalPhoto?`<img src="${CONFIG.finalPhoto}">`:""}<p>${CONFIG.finalLetter}</p>${CONFIG.voice?`<p style="margin-top:12px">🎙️ මගේ කටහඬින් පණිවිඩයක්:</p><audio controls src="${CONFIG.voice}" onplay="bgm.pause()" style="width:100%"></audio>`:""}`;
-  setInterval(()=>{const c=document.createElement("div");c.className="conf";
-    c.textContent=["🎉","💙","🎈","✨","🩵"][Math.random()*5|0];c.style.left=Math.random()*95+"%";
-    document.body.appendChild(c);setTimeout(()=>c.remove(),4200)},200);
+function heartStart(){
+  heartKill(true);HA.on=true;
+  fade(bgm,0,2000,()=>bgm.pause());
+  if(CONFIG.heartMusic){const m=HA.m=new Audio(CONFIG.heartMusic);m.loop=true;m.volume=0;m.play().then(()=>fade(m,CONFIG.musicVol||.6,3500)).catch(()=>{})}
+  if(CONFIG.heartBeat){const h=HA.h=new Audio(CONFIG.heartBeat);h.loop=true;h.volume=0;h.play().then(()=>fade(h,CONFIG.heartBeatVol||.55,2500)).catch(()=>{})}
+  const L=CONFIG.heartVoices||[];let i=0;
+  const nextV=()=>{
+    if(!HA.on||i>=L.length)return;
+    const v=HA.v=new Audio(L[i++]);v.volume=0;let fin=false,fadedOut=false;
+    const end=()=>{if(fin)return;fin=true;HA.m&&fade(HA.m,CONFIG.musicVol||.6,2000);if(HA.on)HA.t=setTimeout(nextV,CONFIG.voiceGapMs||9000)};
+    v.onplaying=()=>{HA.m&&fade(HA.m,CONFIG.musicDuck||.35,1200);fade(v,1,1200)};
+    v.ontimeupdate=()=>{if(!fadedOut&&v.duration&&v.duration-v.currentTime<1.2){fadedOut=true;fade(v,0,1100)}};
+    v.onended=end;v.onerror=end;
+    v.play().catch(end);
+  };
+  HA.t=setTimeout(nextV,CONFIG.voiceFirstMs||7000);
+}
+function heartVoicesStop(){HA.on=false;clearTimeout(HA.t);if(HA.v){const v=HA.v;v.onended=v.onerror=null;fade(v,0,800,()=>v.pause())}}
+function heartKill(quiet){
+  HA.on=false;clearTimeout(HA.t);
+  if(HA.v){HA.v.onended=HA.v.onerror=null;HA.v.pause();HA.v=null}
+  if(HA.m){const m=HA.m;HA.m=null;fade(m,0,800,()=>m.pause())}
+  if(HA.h){const h=HA.h;HA.h=null;fade(h,0,800,()=>h.pause())}
+  if(!quiet&&CONFIG.music&&musicOn&&bgm.paused){bgm.play().then(()=>fade(bgm,.6,2000)).catch(()=>{})}
+}
+
+/* ===== cake: blow out the candle, open the letter, light takes over ===== */
+let cakeLetter=0;
+function startCake(){
+  cakeLetter=0;$("wh").className="";
+  ["flame","cglowc"].forEach(i=>$(i).classList.remove("out"));$("smoke").classList.remove("go");
+  $("letterG").classList.remove("open");$("cakeMsg").textContent="🕯️ ඉටිපන්දම ඇල්ලුවම නිවෙනවා…";
+  $("candHit").onclick=()=>{if($("flame").classList.contains("out"))return;
+    $("flame").classList.add("out");$("cglowc").classList.add("out");
+    const sm=$("smoke");sm.classList.remove("go");void sm.getBoundingClientRect();sm.classList.add("go");
+    navigator.vibrate&&navigator.vibrate(40);$("cakeMsg").textContent="ඔයාගේ ඉත්ත ඉටු වේවා ✨ දැන් ලියුම ඇල්ලුවම ඇරෙනවා 💌"};
+  $("letterG").onclick=openLetter;
+}
+function openLetter(){
+  if(cakeLetter)return;cakeLetter=1;$("letterG").classList.add("open");$("cakeMsg").textContent="💌";
+  HA.m&&fade(HA.m,.3,2500);
+  let ended=false;const fin=()=>{if(ended)return;ended=true;lightsOut()};
+  setTimeout(()=>{
+    if(!CONFIG.letterVoice){setTimeout(fin,CONFIG.letterFallbackMs||9000);return}
+    const a=new Audio(CONFIG.letterVoice);a.onended=fin;a.onerror=()=>setTimeout(fin,CONFIG.letterFallbackMs||9000);
+    a.play().catch(()=>setTimeout(fin,CONFIG.letterFallbackMs||9000));
+  },1500);
+}
+function lightsOut(){
+  $("wh").classList.add("on");HA.m&&fade(HA.m,0,6000);HA.h&&fade(HA.h,0,6000);
 }
 
 /* Vault */
