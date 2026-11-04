@@ -441,9 +441,9 @@ const CONFIG = {
     {q:"ඔයා මට කොච්චරක් ආදරයෙද?", a:["ඉදිකටු තුඩක්","ඇඟිලි දෙකක පරතරයක්","අහසක්","ලෝකයක්","විශ්වයක්"],i:["🪡","✌️","☁️","🌍","🌌"], c:0}
   ],
   quizEnd: "මම දන්නව මැණික මම දැන් ඔයාගෙ හුස්ම කියල ඒක මට දැනෙනව",
-  heartMusic: "heart_music.mp3", heartBeat: "heartbeat.mp3", heartBeatVol: .55, musicVol: .6, musicDuck: .35,          // හදවත ඇතුලෙදි play වෙන track එක (ඔයා දෙන එක)
+  testShortcut: true, heartMusic: "heart_music.mp3", heartBeat: "heartbeat.mp3", heartBeatVol: .55, musicVol: .6, musicDuck: .35,          // හදවත ඇතුලෙදි play වෙන track එක (ඔයා දෙන එක)
   heartVoices: ["voice1.mp3"],  // හදවත ඇතුලෙදි track එකත් එක්ක blend වෙන voice clips (පිළිවෙලට)
-  voiceFirstMs: 7000,           // හදවතට ඇතුල් වෙලා පළවෙනි voice clip එක එන තෙක් වෙලාව (ms)
+  voiceFirstMs: 5000, musicDelayMs: 2000,           // හදවතට ඇතුල් වෙලා පළවෙනි voice clip එක එන තෙක් වෙලාව (ms)
   voiceGapMs: 9000,             // voice clips අතර පරතරය (ms)
   letterVoice: "voice2.mp3",   // ලියුම ඇරියාම play වෙන voice clip එක
   letterFallbackMs: 9000,       // letterVoice file එක නැත්නම් / play නොවුණොත් එලිය වැඩි වෙන්න කලින් ඉන්න වෙලාව
@@ -1016,8 +1016,11 @@ function fade(el,to,ms,cb){
 function heartStart(){
   heartKill(true);HA.on=true;
   fade(bgm,0,2000,()=>bgm.pause());
-  if(CONFIG.heartMusic){const m=HA.m=new Audio(CONFIG.heartMusic);m.loop=true;m.volume=0;m.play().then(()=>fade(m,CONFIG.musicVol||.6,3500)).catch(()=>{})}
-  if(CONFIG.heartBeat){const h=HA.h=new Audio(CONFIG.heartBeat);h.loop=true;h.volume=0;h.play().then(()=>fade(h,CONFIG.heartBeatVol||.55,2500)).catch(()=>{})}
+  HA.live=true;
+  HA.mt=setTimeout(()=>{if(!HA.live||!CONFIG.heartMusic)return;const m=HA.m=new Audio(CONFIG.heartMusic);m.loop=true;m.volume=0;m.play().then(()=>fade(m,CONFIG.musicVol||.6,3500)).catch(()=>{})},CONFIG.musicDelayMs||2000);
+  if(CONFIG.heartBeat){const h=HA.h=new Audio(CONFIG.heartBeat);h.loop=true;h.volume=0;h.play().then(()=>fade(h,CONFIG.heartBeatVol||.55,800)).catch(()=>{})}
+  clearInterval(HA.vb);const vib=()=>{if(!HA.live){clearInterval(HA.vb);return}navigator.vibrate&&navigator.vibrate([50,228,40])};
+  setTimeout(()=>{if(!HA.live)return;vib();HA.vb=setInterval(vib,985)},150);
   const L=CONFIG.heartVoices||[];let i=0;
   const nextV=()=>{
     if(!HA.on||i>=L.length)return;
@@ -1032,7 +1035,7 @@ function heartStart(){
 }
 function heartVoicesStop(){HA.on=false;clearTimeout(HA.t);if(HA.v){const v=HA.v;v.onended=v.onerror=null;fade(v,0,800,()=>v.pause())}}
 function heartKill(quiet){
-  HA.on=false;clearTimeout(HA.t);
+  HA.on=false;HA.live=false;clearTimeout(HA.t);clearTimeout(HA.mt);clearInterval(HA.vb);navigator.vibrate&&navigator.vibrate(0);
   if(HA.v){HA.v.onended=HA.v.onerror=null;HA.v.pause();HA.v=null}
   if(HA.m){const m=HA.m;HA.m=null;fade(m,0,800,()=>m.pause())}
   if(HA.h){const h=HA.h;HA.h=null;fade(h,0,800,()=>h.pause())}
@@ -1062,7 +1065,7 @@ function openLetter(){
   },1500);
 }
 function lightsOut(){
-  $("wh").classList.add("on");HA.m&&fade(HA.m,0,6000);HA.h&&fade(HA.h,0,6000);
+  $("wh").classList.add("on");HA.m&&fade(HA.m,0,6000);HA.h&&fade(HA.h,0,6000);HA.live=false;clearInterval(HA.vb);
 }
 
 /* Vault */
@@ -1080,6 +1083,15 @@ async function sendMsg(){
     await fetch(CONFIG.msgUrl,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({key:CONFIG.msgKey,text:t})});
     $("vText").value="";st.textContent="යැව්වා 💙 මට ලැබුණා";
   }catch(e){st.textContent="යවන්න බැරි වුණා, ආයෙ උත්සාහ කරන්න"}
+}
+
+/* TEST ONLY: shortcut button on first page -> heart interior. Set CONFIG.testShortcut:false to hide */
+if(CONFIG.testShortcut){
+  const tb=document.createElement("button");tb.textContent="\u2764 TEST";
+  tb.style.cssText="position:absolute;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:60;padding:8px 14px;font:600 13px system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.45);border:1px dashed rgba(255,255,255,.6);border-radius:999px;opacity:.75";
+  ["pointerdown","touchstart","mousedown"].forEach(ev=>tb.addEventListener(ev,e=>e.stopPropagation()));
+  tb.addEventListener("click",e=>{e.stopPropagation();tb.remove();go(7);startFpv()});
+  $("s0").appendChild(tb);
 }
 </script>
 </body>
