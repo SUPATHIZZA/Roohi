@@ -441,9 +441,9 @@ const CONFIG = {
     {q:"ඔයා මට කොච්චරක් ආදරයෙද?", a:["ඉදිකටු තුඩක්","ඇඟිලි දෙකක පරතරයක්","අහසක්","ලෝකයක්","විශ්වයක්"],i:["🪡","✌️","☁️","🌍","🌌"], c:0}
   ],
   quizEnd: "මම දන්නව මැණික මම දැන් ඔයාගෙ හුස්ම කියල ඒක මට දැනෙනව",
-  testShortcut: true, heartMusic: "heart_music.mp3", heartBeat: "heartbeat.mp3", heartBeatVol: .55, musicVol: .6, musicDuck: .35,          // හදවත ඇතුලෙදි play වෙන track එක (ඔයා දෙන එක)
+  testShortcut: true, heartMusic: "heart_music.mp3", heartBeat: "heartbeat.mp3", heartBeatVol: 1, musicVol: .7, musicDuck: .12, letterDuck: .12,          // හදවත ඇතුලෙදි play වෙන track එක (ඔයා දෙන එක)
   heartVoices: ["voice1.mp3"],  // හදවත ඇතුලෙදි track එකත් එක්ක blend වෙන voice clips (පිළිවෙලට)
-  voiceFirstMs: 5000, musicDelayMs: 2000,           // හදවතට ඇතුල් වෙලා පළවෙනි voice clip එක එන තෙක් වෙලාව (ms)
+  voiceFirstMs: 3000, musicDelayMs: 0,           // හදවතට ඇතුල් වෙලා පළවෙනි voice clip එක එන තෙක් වෙලාව (ms)
   voiceGapMs: 9000,             // voice clips අතර පරතරය (ms)
   letterVoice: "voice2.mp3",   // ලියුම ඇරියාම play වෙන voice clip එක
   letterFallbackMs: 9000,       // letterVoice file එක නැත්නම් / play නොවුණොත් එලිය වැඩි වෙන්න කලින් ඉන්න වෙලාව
@@ -1011,15 +1011,16 @@ function startFpv(){
 const HA={m:null,h:null,v:null,t:0,on:false,fx:new Map()};
 function fade(el,to,ms,cb){
   if(!el)return;clearInterval(HA.fx.get(el));const from=el.volume,t0=performance.now();
-  const iv=setInterval(()=>{const p=Math.min(1,(performance.now()-t0)/ms);el.volume=Math.max(0,Math.min(1,from+(to-from)*p));if(p>=1){clearInterval(iv);cb&&cb()}},40);HA.fx.set(el,iv);
+  const iv=setInterval(()=>{const p=Math.min(1,(performance.now()-t0)/ms);el.volume=Math.max(0,Math.min(2,from+(to-from)*p));if(p>=1){clearInterval(iv);cb&&cb()}},40);HA.fx.set(el,iv);
 }
 /* ---- Web Audio engine for the heart section (works on iPhone: real volume control + timers allowed after first tap) ---- */
 const HW={ctx:null,pend:{}};
+function dbg(m){if(!CONFIG.testShortcut)return;let d=document.getElementById("dbg");if(!d){d=document.createElement("div");d.id="dbg";d.style.cssText="position:fixed;left:6px;top:calc(6px + env(safe-area-inset-top,0px));z-index:9999;font:11px/1.35 monospace;white-space:pre;color:#9f9;background:rgba(0,0,0,.6);padding:4px 6px;border-radius:6px;pointer-events:none;max-width:92vw";document.body.appendChild(d)}d.textContent+=m+"\n"}
 function wCtx(){if(!HW.ctx){try{HW.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}return HW.ctx}
 function wUnlock(){const c=wCtx();if(!c)return;try{c.resume&&c.resume();const b=c.createBuffer(1,1,22050),q=c.createBufferSource();q.buffer=b;q.connect(c.destination);q.start(0)}catch(e){}wPreload()}
 function wLoad(u){if(HW.pend[u])return HW.pend[u];const c=wCtx();if(!c)return Promise.reject(new Error("noctx"));
-  return HW.pend[u]=fetch(u).then(r=>{if(!r.ok)throw new Error(r.status);return r.arrayBuffer()}).then(a=>new Promise((ok,no)=>c.decodeAudioData(a,ok,no))).catch(e=>{delete HW.pend[u];throw e})}
-function wPreload(){[CONFIG.heartBeat,CONFIG.heartMusic].concat(CONFIG.heartVoices||[]).forEach(u=>{if(u)wLoad(u).catch(()=>{})})}
+  return HW.pend[u]=fetch(u).then(r=>{if(!r.ok)throw new Error(r.status);return r.arrayBuffer()}).then(a=>new Promise((ok,no)=>c.decodeAudioData(a,ok,no))).catch(e=>{delete HW.pend[u];dbg('LOAD FAIL '+u+' '+(e&&e.message));throw e})}
+function wPreload(){[CONFIG.heartBeat,CONFIG.heartMusic,CONFIG.letterVoice].concat(CONFIG.heartVoices||[]).forEach(u=>{if(u)wLoad(u).catch(()=>{})})}
 function wPlay(buf,loop){const c=HW.ctx,q=c.createBufferSource(),g=c.createGain();q.buffer=buf;q.loop=!!loop;g.gain.value=0;q.connect(g);g.connect(c.destination);q.start(0);
   return{s:q,g:g,dur:buf.duration,get volume(){return g.gain.value},set volume(v){g.gain.value=v},pause(){try{q.stop()}catch(e){}},get onended(){return q.onended},set onended(f){q.onended=f}}}
 ["touchend","pointerup","click"].forEach(ev=>document.addEventListener(ev,function h(){wUnlock();if(HW.ctx&&HW.ctx.state==="running")document.removeEventListener(ev,h,true)},{capture:true,passive:true}));
@@ -1029,31 +1030,32 @@ function heartStart(){
   const tok=HA.tok=(HA.tok||0)+1,ok=()=>HA.live&&HA.tok===tok,T0=performance.now();
   fade(bgm,0,2000,()=>bgm.pause());
   const c=wCtx();if(c&&c.resume)c.resume();
+  dbg('build 8 | audio '+(c?c.state:'none'));
   /* 1) heartbeat: immediately */
-  if(CONFIG.heartBeat)wLoad(CONFIG.heartBeat).then(b=>{if(!ok())return;const h=HA.h=wPlay(b,true);HA.hT=performance.now();fade(h,CONFIG.heartBeatVol||.55,800)}).catch(()=>{});
+  if(CONFIG.heartBeat)wLoad(CONFIG.heartBeat).then(b=>{if(!ok())return;dbg('beat on');const h=HA.h=wPlay(b,true);HA.hT=performance.now();fade(h,CONFIG.heartBeatVol||1,500)}).catch(()=>{});
   /* vibration in the heartbeat rhythm (Android only) */
   clearInterval(HA.vb);const vib=()=>{if(!HA.live){clearInterval(HA.vb);return}navigator.vibrate&&navigator.vibrate([50,228,40])};
   setTimeout(()=>{if(!HA.live)return;vib();HA.vb=setInterval(vib,985)},150);
   /* 2) background music: after musicDelayMs */
   if(CONFIG.heartMusic)wLoad(CONFIG.heartMusic).then(b=>{
-    HA.mt=setTimeout(()=>{if(!ok())return;const m=HA.m=wPlay(b,true);fade(m,CONFIG.musicVol||.6,3500)},Math.max(0,(CONFIG.musicDelayMs||2000)-(performance.now()-T0)))}).catch(()=>{});
+    HA.mt=setTimeout(()=>{if(!ok())return;dbg('music on');const m=HA.m=wPlay(b,true);fade(m,CONFIG.musicVol||.7,1500)},Math.max(0,(CONFIG.musicDelayMs||0)-(performance.now()-T0)))}).catch(()=>{});
   /* 3) your voice: after voiceFirstMs */
   const L=CONFIG.heartVoices||[];let i=0;
   const nextV=()=>{
     if(!ok()||!HA.on||i>=L.length)return;
     const u=L[i++];let fin=false;
-    const end=()=>{if(fin)return;fin=true;HA.m&&fade(HA.m,CONFIG.musicVol||.6,2000);if(HA.on)HA.t=setTimeout(nextV,CONFIG.voiceGapMs||9000)};
+    const end=()=>{if(fin)return;fin=true;HA.m&&fade(HA.m,CONFIG.musicVol||.7,2000);if(HA.on)HA.t=setTimeout(nextV,CONFIG.voiceGapMs||9000)};
     wLoad(u).then(b=>{
       if(!ok()||!HA.on)return;
-      const v=HA.v=wPlay(b,false);
-      HA.m&&fade(HA.m,CONFIG.musicDuck||.35,1200);fade(v,1,1200);
+      dbg('voice on '+Math.round(b.duration)+'s');const v=HA.v=wPlay(b,false);
+      HA.m&&fade(HA.m,CONFIG.musicDuck||.12,1000);fade(v,1,800);
       setTimeout(()=>{if(HA.v===v)fade(v,0,1100)},Math.max(0,(b.duration-1.2)*1000));
       v.onended=end;
-    }).catch(end);
+    }).catch(e=>{dbg('voice fail '+(e&&e.message));end()});
   };
-  HA.t=setTimeout(nextV,CONFIG.voiceFirstMs||5000);
+  HA.t=setTimeout(nextV,CONFIG.voiceFirstMs||3000);
 }
-function heartVoicesStop(){HA.on=false;clearTimeout(HA.t);if(HA.v){const v=HA.v;v.onended=v.onerror=null;fade(v,0,800,()=>v.pause())}}
+function heartVoicesStop(){HA.on=false;clearTimeout(HA.t);if(HA.v){const v=HA.v;v.onended=v.onerror=null;fade(v,0,800,()=>v.pause())}HA.m&&fade(HA.m,CONFIG.musicVol||.7,1500)}
 function heartKill(quiet){
   HA.on=false;HA.live=false;HA.hT=0;clearTimeout(HA.t);clearTimeout(HA.mt);clearInterval(HA.vb);navigator.vibrate&&navigator.vibrate(0);
   if(HA.v){HA.v.onended=HA.v.onerror=null;HA.v.pause();HA.v=null}
@@ -1076,13 +1078,19 @@ function startCake(){
 }
 function openLetter(){
   if(cakeLetter)return;cakeLetter=1;$("letterG").classList.add("open");$("cakeMsg").textContent="💌";
-  HA.m&&fade(HA.m,.3,2500);
+  /* music goes down, heartbeat keeps going loud (same as during voice1) */
+  HA.m&&fade(HA.m,CONFIG.letterDuck!=null?CONFIG.letterDuck:.12,1000);
+  HA.h&&fade(HA.h,CONFIG.heartBeatVol||1,600);
   let ended=false;const fin=()=>{if(ended)return;ended=true;lightsOut()};
+  const fb=()=>setTimeout(fin,CONFIG.letterFallbackMs||9000);
+  if(!CONFIG.letterVoice){fb();return}
   setTimeout(()=>{
-    if(!CONFIG.letterVoice){setTimeout(fin,CONFIG.letterFallbackMs||9000);return}
-    const a=new Audio(CONFIG.letterVoice);a.onended=fin;a.onerror=()=>setTimeout(fin,CONFIG.letterFallbackMs||9000);
-    a.play().catch(()=>setTimeout(fin,CONFIG.letterFallbackMs||9000));
-  },1500);
+    wLoad(CONFIG.letterVoice).then(b=>{
+      const v=wPlay(b,false);fade(v,1,800);v.onended=fin;setTimeout(fin,(b.duration+2)*1000);
+    }).catch(()=>{
+      const a=new Audio(CONFIG.letterVoice);a.onended=fin;a.onerror=fb;a.play().catch(fb);
+    });
+  },400);
 }
 function lightsOut(){
   $("wh").classList.add("on");HA.m&&fade(HA.m,0,6000);HA.h&&fade(HA.h,0,6000);HA.live=false;clearInterval(HA.vb);
