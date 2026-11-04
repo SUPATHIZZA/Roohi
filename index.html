@@ -399,7 +399,7 @@ body.dark #cap{pointer-events:none;font-size:1.25rem;line-height:1.7;max-width:4
 /* ============ මෙතන විතරක් වෙනස් කරන්න (CONFIG) ============ */
 const CONFIG = {
   name: "මගේ ආදරේ",
-  heartPhotos:[{src:"photos/1.jpg",cap:"කන්දක් උඩ අපි දෙන්නා 🌄"},{src:"photos/2.jpg",cap:"අපේ ලස්සන සෙල්ෆි එක 📸"},{src:"photos/3.jpg",cap:"අතින් අත ගත්ත ඇවිදිල්ල 🤍"},{src:"photos/4.jpg",cap:"හිරු බැහැපු සන්ධ්‍යාවක 🌅"},{src:"photos/5.jpg",cap:"අපේ පවුලේ සිහිනය 👨‍👩‍👧‍👦"}],  // photos/1.jpg ... 5.jpg, cap = පහළින් පෙන්නන වචන
+  heartPhotos:[{src:"1.jpg",cap:"කන්දක් උඩ අපි දෙන්නා 🌄"},{src:"2.jpg",cap:"අපේ ලස්සන සෙල්ෆි එක 📸"},{src:"3.jpg",cap:"අතින් අත ගත්ත ඇවිදිල්ල 🤍"},{src:"4.jpg",cap:"හිරු බැහැපු සන්ධ්‍යාවක 🌅"},{src:"5.jpg",cap:"අපේ පවුලේ සිහිනය 👨‍👩‍👧‍👦"}],  // photos/1.jpg ... 5.jpg, cap = පහළින් පෙන්නන වචන
   heartText: "ඔයා දැන් මගේ හදවත ඇතුලේ... මෙතන තියෙන්නේ ඔයාට විතරයි 💗",
   title: "Happy Birthday, මගේ ආදරේ! 🎂",
   passcode: "1234",
@@ -966,7 +966,7 @@ function startFpv(){
   let dn=0,lx=0,ly=0;c.onpointerdown=e=>{dn=1;lx=e.clientX;ly=e.clientY};c.onpointermove=e=>{if(!dn)return;LK.w=Math.max(-1.2,Math.min(1.2,LK.w-(e.clientX-lx)*.005));LK.p=Math.max(-.5,Math.min(.9,LK.p+(e.clientY-ly)*.005));lx=e.clientX;ly=e.clientY};c.onpointerup=c.onpointerleave=()=>dn=0;
   const pr=Array.from({length:80},()=>({a:Math.random()*6.28,r:.2+Math.random()*.8,z:Math.random(),s:2+Math.random()*4}));
   let ac,lastB=-1;try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
-  const thump=(v)=>{if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(70,ac.currentTime);o.frequency.exponentialRampToValueAtTime(38,ac.currentTime+.18);
+  const thump=(v)=>{if(!ac||CONFIG.heartBeat)return;const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(70,ac.currentTime);o.frequency.exponentialRampToValueAtTime(38,ac.currentTime+.18);
     g.gain.setValueAtTime(v,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.22);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+.25)};
   const ez=v=>v<0?0:v>1?1:v*v*(3-2*v);
   function frame(now){
